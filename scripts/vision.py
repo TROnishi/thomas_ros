@@ -14,7 +14,6 @@ class ThomasVision:
 def main():
     rospy.init_node("thomas_vision_node", anonymous=True)
     thomas = ThomasVision()
-    thomas()
 
 if __name__ == "__main__":
     main()
