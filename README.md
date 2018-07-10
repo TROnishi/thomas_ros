@@ -27,3 +27,8 @@ main.pyからリクエストを受け、蒸気を発する。
 トピックから画像を読み込んで物体検出と認識を行う。
 * params.py
 変更しがちな変数をここに記入(GPUIDやトピックなど)
+
+## 実行
+* 画像認識部分
+$ rosrun thomas_ros image_publisher.py
+$ rosrun thomas_ros find_object.py
