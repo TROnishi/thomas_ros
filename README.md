@@ -32,3 +32,7 @@ main.pyからリクエストを受け、蒸気を発する。
 * 画像認識部分  
 ```$ rosrun thomas_ros image_publisher.py```  
 ```$ rosrun thomas_ros find_object.py```
+
+## いるもの
+chainer v4.x.x  
+chainercv vなんでも
