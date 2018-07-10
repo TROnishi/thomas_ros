@@ -1,6 +1,7 @@
 import numpy as np
 
-from lib import vis_image
+# import vis_image
+import cv2
 
 
 def vis_bbox(img, bbox, label=None, score=None, label_names=None,
@@ -69,11 +70,11 @@ def vis_bbox(img, bbox, label=None, score=None, label_names=None,
         raise ValueError('The length of score must be same as that of bbox')
 
     # Returns newly instantiated matplotlib.axes.Axes object if ax is None
-    ax = vis_image(img, ax=ax)
+    # ax = vis_image(img, ax=ax)
 
     # If there is no bounding box to display, visualize the image and exit.
     if len(bbox) == 0:
-        return ax
+        return img
 
     if instance_colors is None:
         # Red
@@ -82,28 +83,43 @@ def vis_bbox(img, bbox, label=None, score=None, label_names=None,
     instance_colors = np.array(instance_colors)
 
     for i, bb in enumerate(bbox):
+        print(bb[0])
+        p1 = int(bb[1])
+        p2 = int(bb[0])
+        p3 = int(bb[3])
+        p4 = int(bb[2])
+        q1 = p1
+        q2 = p4
+
         xy = (bb[1], bb[0])
         height = bb[2] - bb[0]
         width = bb[3] - bb[1]
         color = instance_colors[i % len(instance_colors)] / 255
-        ax.add_patch(plt.Rectangle(
-            xy, width, height, fill=False,
-            edgecolor=color, linewidth=linewidth, alpha=alpha))
 
-        caption = []
+        img = cv2.rectangle(img, (p1, p2), (p3, p4), (0,0,255), 3)
+        img = cv2.rectangle(img, (q1, q2-25), (p3,q2), (0,0,255), -1)
+        text = str(label_names[label[i]]) + ":" + str(score[i])
+        img = cv2.putText(img, text, (q1, q2 - 8), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0,0,0), 3)
 
-        if label is not None and label_names is not None:
-            lb = label[i]
-            if not (0 <= lb < len(label_names)):
-                raise ValueError('No corresponding name is given')
-            caption.append(label_names[lb])
-        if score is not None:
-            sc = score[i]
-            caption.append('{:.2f}'.format(sc))
 
-        if len(caption) > 0:
-            ax.text(bb[1], bb[0],
-                    ': '.join(caption),
-                    style='italic',
-                    bbox={'facecolor': 'white', 'alpha': 0.7, 'pad': 10})
-    return ax
+        # ax.add_patch(plt.Rectangle(
+        #     xy, width, height, fill=False,
+        #     edgecolor=color, linewidth=linewidth, alpha=alpha))
+
+        # caption = []
+
+        # if label is not None and label_names is not None:
+        #     lb = label[i]
+        #     if not (0 <= lb < len(label_names)):
+        #         raise ValueError('No corresponding name is given')
+        #     caption.append(label_names[lb])
+        # if score is not None:
+        #     sc = score[i]
+        #     caption.append('{:.2f}'.format(sc))
+
+        # if len(caption) > 0:
+        #     ax.text(bb[1], bb[0],
+        #             ': '.join(caption),
+        #             style='italic',
+        #             bbox={'facecolor': 'white', 'alpha': 0.7, 'pad': 10})
+    return img
