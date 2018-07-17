@@ -34,10 +34,14 @@ class ThomasVision:
 
         self.imagesub = rospy.Subscriber(params.image_topic, Image, self.imageCB)
         self.image_pub = rospy.Publisher(params.result_topic, Image)
+        self.stock_img = np.zeros((300,300,3), np.uint8)
         
         if params.gpu > 0:
             chainer.cuda.get_device_from_id(params.gpu).use()
             model.to_gpu()
+   
+    def detection_loop(self):
+        self.detection(self.stock_img)
     
     def imageCB(self, data):
         try:
@@ -49,9 +53,8 @@ class ThomasVision:
         except CvBridgeError as e:
             rospy.logerr(e)
 
-
+        self.stock_img = img
         
-        self.detection(img)
 
 
     def detection(self, img):
@@ -76,6 +79,8 @@ class ThomasVision:
 def main():
     rospy.init_node("thomas_vision_node", anonymous=True)
     thomas = ThomasVision()
+    while(True):
+        thomas.detection_loop()
     rospy.spin()
 
 if __name__ == "__main__":

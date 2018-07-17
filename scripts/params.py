@@ -1,4 +1,4 @@
-camera_id = 0
-gpu = -1
+camera_id = 1
+gpu = 0
 image_topic = "/image"
 result_topic = "/result"
